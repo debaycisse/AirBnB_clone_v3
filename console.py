@@ -18,23 +18,38 @@ classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
 
 
 class HBNBCommand(cmd.Cmd):
-    """ HBNH console """
+    """ HBNB console or command-line interface application"""
     prompt = '(hbnb) '
 
     def do_EOF(self, arg):
-        """Exits console"""
+        """Exits the console"""
         return True
 
+    def help_EOF(self):
+        """closes the interactive command-line program"""
+        print("closes the interactive command-line program")
+        print("Usage: EOF")
+
     def emptyline(self):
-        """ overwriting the emptyline method """
+        """ overwriting the emptyline method of the cmd.Cmd
+        to handle empyty line"""
         return False
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
         return True
 
+    def help_quit(self):
+        print("closes the interactive command-line program")
+        print("Usage: quit")
+
     def _key_value_parser(self, args):
-        """creates a dictionary from a list of strings"""
+        """creates a dictionary from a list of strings
+
+        Args:
+            args - a passed string that contains the command to be parsed
+            for the creation of the key / value pair
+        """
         new_dict = {}
         for arg in args:
             if "=" in arg:
@@ -46,16 +61,21 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     try:
                         value = int(value)
-                    except:
+                    except Exception as e:
                         try:
                             value = float(value)
-                        except:
+                        except Exception as e:
                             continue
                 new_dict[key] = value
         return new_dict
 
     def do_create(self, arg):
-        """Creates a new instance of a class"""
+        """Creates a new instance of a class
+
+        Args:
+            arg - a passed string that contains the name of the model
+            whose instance is to be created
+        """
         args = arg.split()
         if len(args) == 0:
             print("** class name missing **")
@@ -69,8 +89,15 @@ class HBNBCommand(cmd.Cmd):
         print(instance.id)
         instance.save()
 
+    def help_create(self):
+        """handles the help command on the use of create commad"""
+
+        print("creates a new instance of a model and saves it")
+        print("Usage: create <instance_model_name>")
+
     def do_show(self, arg):
         """Prints an instance as a string based on the class and id"""
+
         args = shlex.split(arg)
         if len(args) == 0:
             print("** class name missing **")
@@ -87,8 +114,21 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
+    def help_show(self):
+        """handles the help command for the show command"""
+
+        print("displays string representation of an instance, ", end="")
+        print("based on the class name and id")
+        print("Usage: show <instance_model_name> <instance_id>")
+
     def do_destroy(self, arg):
-        """Deletes an instance based on the class and id"""
+        """Deletes an instance based on the class and id
+
+        Args:
+            arg - a string that contains the passed
+            instance's class name and id
+        """
+
         args = shlex.split(arg)
         if len(args) == 0:
             print("** class name missing **")
@@ -105,8 +145,19 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
 
+    def help_destroy(self):
+        """displays help instruction for the use of the destroy command"""
+
+        print("deletes an instance based on the class name and id")
+        print("Usage: destroy <instance_model_name> <instance_id>")
+
     def do_all(self, arg):
-        """Prints string representations of instances"""
+        """Prints string representations of a given instance
+
+        Args:
+            arg - contains the name of the class whose
+            list of instances are to be displayed
+        """
         args = shlex.split(arg)
         obj_list = []
         if len(args) == 0:
@@ -122,8 +173,20 @@ class HBNBCommand(cmd.Cmd):
         print(", ".join(obj_list), end="")
         print("]")
 
+    def help_all(self):
+        """displays help instruction for the use of the all command"""
+
+        print("prints all string representation of all instances")
+        print("Usage: all [<instance_model_name>]")
+
     def do_update(self, arg):
-        """Update an instance based on the class name, id, attribute & value"""
+        """Update an instance based on the class name,
+        id, attribute & value
+
+        Args:
+            arg - a string which contains the data (key and value)
+            to be used for the update
+        """
         args = shlex.split(arg)
         integers = ["number_rooms", "number_bathrooms", "max_guest",
                     "price_by_night"]
@@ -140,12 +203,12 @@ class HBNBCommand(cmd.Cmd):
                                 if args[2] in integers:
                                     try:
                                         args[3] = int(args[3])
-                                    except:
+                                    except Exception as e:
                                         args[3] = 0
                                 elif args[2] in floats:
                                     try:
                                         args[3] = float(args[3])
-                                    except:
+                                    except Exception as e:
                                         args[3] = 0.0
                             setattr(models.storage.all()[k], args[2], args[3])
                             models.storage.all()[k].save()
@@ -159,6 +222,14 @@ class HBNBCommand(cmd.Cmd):
                 print("** instance id missing **")
         else:
             print("** class doesn't exist **")
+
+    def help_update(self):
+        """displays the help instruction for the usage of update command"""
+
+        print("updates an instance based on the class name and id, given")
+        print("Usage: update <instance_model_name>", end="")
+        print(" <instance_id> <attribute_name> <attribute_value>")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
