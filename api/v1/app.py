@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """Module that defines a flask application whose views have been seperated"""
 
-from flask import Flask
+from flask import Flask, jsonify, abort
 from models import storage
 from api.v1.views import app_views
 from os import getenv
@@ -23,6 +23,17 @@ def close_db(error):
 
 
 app.register_blueprint(app_views)
+
+
+@app.errorhandler(404)
+def custom_404(e):
+    """handles an error that occur when a request is made to a
+    non-defined or nor-existing route
+
+    Args:
+        e - error object
+    """
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == '__main__':
