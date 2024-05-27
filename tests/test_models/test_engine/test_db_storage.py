@@ -143,3 +143,39 @@ class TestFileStorage(unittest.TestCase):
         models.storage.save()
         st_obj_from_db = models.storage.all(State)[st_key]
         self.assertTrue(st.name == st_obj_from_db.name)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get(self):
+        """Test that get method obtains a correct object"""
+        st = State(name='Lagos')
+        st.save()
+        ct = City(name='Ketu', state_id=st.id)
+        ct.save()
+        st_instance_obj = ct_instance_obj = None
+        for obj_k in models.storage.get(State, st.id):
+            st_instance_obj = models.storage.get(State, st.id)[obj_k]
+        for obj_k in models.storage.get(City, ct.id):
+            ct_instance_obj = models.storage.get(City, ct.id)[obj_k]
+        self.assertTrue(st_instance_obj.id == st.id)
+        self.assertTrue(ct_instance_obj.id == ct.id)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing file storage")
+    def test_count(self):
+        """Test that count works correctly"""
+        state_list = ['Lagos', 'Abuja', 'Kwara']
+        st_inst_list = []
+        for i in range(3):
+            st = State(name=state_list[i])
+            st.save()
+            st_inst_list.append(st)
+        city_list = ['Ketu', 'Gwagwalada', 'Asa']
+        ct_inst_list = []
+        for i in range(3):
+            ct = City(name=city_list[i],
+                      state_id=st_inst_list[i].id)
+            ct.save()
+        num_state = models.storage.count(State)
+        num_city = models.storage.count(City)
+        num_all = models.storage.count()
+        self.assertTrue(num_all > num_state)
+        self.assertTrue(num_all > num_city)
