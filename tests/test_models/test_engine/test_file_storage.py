@@ -114,3 +114,45 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_get(self):
+        """Test that get actually obtains the correct object"""
+        storage = FileStorage()
+        st = State(name='Lagos')
+        st.save()
+        ct = City(name='Ikeja', state_id=st.id)
+        ct.save()
+        st_instance_from_store = storage.get(State, st.id)
+        st_instance_obj = None
+        for obj_key in st_instance_from_store:
+            st_instance_obj = st_instance_from_store[obj_key]
+        self.assertTrue(st.id == st_instance_obj.id)
+        ct_instance_from_store = storage.get(City, ct.id)
+        ct_instance_obj = None
+        for obj_key in ct_instance_from_store:
+            ct_instance_obj = ct_instance_from_store[obj_key]
+        self.assertTrue(ct.id == ct_instance_obj.id)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count(self):
+        """Test that count works correctly"""
+        storage = FileStorage()
+        state_list = ['Lagos', 'Abuja', 'Kwara']
+        st_inst_list = []
+        for i in range(3):
+            st = State(name=state_list[i])
+            st.save()
+            st_inst_list.append(st)
+        city_list = ['Ketu', 'Gwagwalada', 'Asa']
+        ct_inst_list = []
+        for i in range(3):
+            ct = City(name=city_list[i],
+                      state_id=st_inst_list[i].id)
+            ct.save()
+        num_state = storage.count(State)
+        num_city = storage.count(City)
+        num_all = storage.count()
+        self.assertTrue(num_state == num_city)
+        self.assertTrue(num_all > num_state)
+        self.assertTrue(num_all > num_city)
