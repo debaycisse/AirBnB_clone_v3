@@ -46,7 +46,7 @@ def get_a_review(review_id):
         return jsonify(v.to_dict())
 
 
-@app_reviews.route('/reviews/<string:review_id>', methods=['DELETE'])
+@app_views.route('/reviews/<string:review_id>', methods=['DELETE'])
 def delete_review(review_id):
     """deletes an instance of the Review model whose id is passed
 
