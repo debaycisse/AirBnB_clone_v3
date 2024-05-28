@@ -24,7 +24,8 @@ def get_all_users():
         return jsonify(user_list)
 
 
-@app_views.route('/users/<string:user_id>', methods=['GET'])
+@app_views.route('/users/<string:user_id>', methods=['GET'],
+                 strict_slashes=False)
 def get_a_user_obj(user_id):
     """retrieves a single User object from the db
 
@@ -41,7 +42,8 @@ def get_a_user_obj(user_id):
         return jsonify(user_dict)
 
 
-@app_views.route('/users/<string:user_id>', methods=['DELETE'])
+@app_views.route('/users/<string:user_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_user_obj(user_id):
     """deletes a user object whose id is given from the database
 
@@ -75,7 +77,8 @@ def create_user_obj():
     return jsonify(user_obj.to_dict()), 201
 
 
-@app_views.route('/users/<string:user_id>', methods=['PUT'])
+@app_views.route('/users/<string:user_id>', methods=['PUT'],
+                 strict_slashes=False)
 def update_user_obj(user_id):
     """updates an instance of the User's object's attribute
 

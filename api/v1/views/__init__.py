@@ -12,6 +12,7 @@ try:
     import api.v1.views.amenities
     import api.v1.views.users
     import api.v1.views.places
+    import api.v1.views.places_reviews
 except ImportError:
     pass
 """# routes for Blueprint are defined in api/v1/views/index.py

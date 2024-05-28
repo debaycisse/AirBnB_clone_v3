@@ -32,7 +32,8 @@ def get_all_places_in_city(city_id):
     return jsonify(pl_list)
 
 
-@app_views.route('/places/<string:place_id>', methods=['GET'])
+@app_views.route('/places/<string:place_id>', methods=['GET'],
+                 strict_slashes=False)
 def get_a_place_obj(place_id):
     """retrieves an instqnce of the Place model
 
@@ -96,7 +97,8 @@ def create_place_obj(city_id):
     return jsonify(pl_obj.to_dict()), 201
 
 
-@app_views.route('places/<string:place_id>', methods=['PUT'])
+@app_views.route('places/<string:place_id>', methods=['PUT'],
+                 strict_slashes=False)
 def update_place_obj(place_id):
     """updates or modifies an existing Place model instance
 
