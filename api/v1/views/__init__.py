@@ -8,6 +8,7 @@ app_views = Blueprint('app_views', __name__, url_prefix='/api/v1')
 try:
     import api.v1.views.index
     import api.v1.views.states
+    import api.v1.views.cities
 except ImportError:
     pass
 """# routes for Blueprint are defined in api/v1/views/index.py
