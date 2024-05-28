@@ -10,6 +10,7 @@ try:
     import api.v1.views.states
     import api.v1.views.cities
     import api.v1.views.amenities
+    import api.v1.views.users
 except ImportError:
     pass
 """# routes for Blueprint are defined in api/v1/views/index.py
