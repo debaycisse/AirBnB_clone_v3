@@ -44,7 +44,7 @@ def get_a_place_obj(place_id):
         abort(404)
     pl_obj = None
     for k, v in pl_kv_obj.items():
-        pl_obj  
+        pl_obj
     return jsonify(pl_obj.to_dict())
 
 
@@ -60,8 +60,8 @@ def delete_a_place_obj(place_id):
     if (not pl_kv_obj):
         abort(404)
     pl_obj = None
-        for k, v in pl_kv_obj.items():
-            pl_obj = v
+    for k, v in pl_kv_obj.items():
+        pl_obj = v
     pl_obj.delete()
     storage.save()
     return jsonify({}), 200
@@ -93,12 +93,35 @@ def create_place_obj(city_id):
     if ('name' not in user_obj):
         abort(400, message='Missing name')
     pl_obj = Place(**data)
-        return jsonify(pl_obj.to_dict()), 201
+    return jsonify(pl_obj.to_dict()), 201
 
 
 @app_views.route('places/<string:place_id>', methods=['PUT'])
 def update_place_obj(place_id):
     """updates or modifies an existing Place model instance
+
     Args:
-        
+        place_id - the id attribute of the instance to be modified
     """
+    pl_kv_obj = storage.get(Place, place_id)
+    if (not pl_kv_obj):
+        abort(404)
+    if (not request.is_json):
+        abort(400, message='Not a JSON')
+    data = request.get_json()
+    pl_obj = None
+    for k, v in pl_kv_obj.items():
+        pl_obj = v
+    for k, v in pl_obj.__dict__.items():
+        nid = (k != 'id')
+        nid2 = (k != 'user_id')
+        ncid = (k != 'city_id')
+        ncat = (k != 'created_at')
+        nuat = (k != 'updated_at')
+        k_ = (k in data)
+        if (nid and nid2 and ncid and ncat and nuat and k_):
+            setattr(pl_obj, k, data[k])
+    storage.save()
+    for k, v in storage.get(Place, place_id).items():
+        pl_obj = v
+    return jsonify(pl_obj.to_dict()), 200
