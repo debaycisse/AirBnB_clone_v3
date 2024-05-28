@@ -85,11 +85,13 @@ def update_state(state_id):
     if (not request.is_json):
         abort(400, message='Not a JSON')
     u_data = request.get_json()
-    st = None
+    st_obj = None
     for k, v in st_kv_obj.items():
+        st_obj = v
+    for k, v in st_obj.__dict__.items():
         if (k == 'name'):
-            setattr(st_kv_obj[k], 'name', u_data['name'])
-        storage.save()
+            setattr(st_obj, k, u_data['name'])
+            storage.save()
     for k, v in storage.get(State, state_id).items():
-        st = v
-    return jsonify(st.to_dict()), 200
+        st_obj = v
+    return jsonify(st_obj.to_dict()), 200
